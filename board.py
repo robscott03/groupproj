@@ -7,45 +7,49 @@ class Board:
     def __init__(self, width, height):
         self.screen = pygame.display.set_mode((width, height))
         self.tile_size = TILESIZE
-        self.width = math.sqrt(3) * self.tile_size
-        self.height = 2 * self.tile_size
+        self.tiles = []
 
     # draws the board
     def draw(self):
-        v = []
-        rows = [3, 4, 5, 4, 3]
         self.screen.fill(BGCOLOUR)
-        x = 200
-        y = 150
+        posx = 306
+        posy = 150
+        rows = [3, 4, 5, 4, 3]
+        v = []  # list of all vertices
 
-        for row in range(5):
-            x_offset = 0
+        # loops through the row of hexagons (3 for 3 hexagons here)
 
-            if row == 2:
-                x_offset -= self.width / 2
+        rows = [3, 4, 5, 4, 3]
 
-            elif row % 2 == 0:
-                x_offset = self.width / 2
+        for o in range(5):
 
-            # loops x times for number of hexagons in row
-            for i in range(rows[row]):
-                x += self.width
-                centre = (round(x + x_offset), round(y))  # stores centre of a hexagon in a tuple
+            x = rows[o]
+
+            for i in range(x):
                 vertices = []
 
-                # calculate vertices from centre of a hexagon
+                # loops through calculating the pos of vertices (6 as hexagon has 6 vertices)
                 for j in range(6):
-                    angle_deg = 60 * j - 30
-                    angle_rad = math.pi / 180 * angle_deg
-                    pointx = centre[0] + self.tile_size * math.cos(angle_rad)
-                    pointy = centre[1] + self.tile_size * math.sin(angle_rad)
-                    vertices.append([math.floor(pointx), math.floor(pointy)])
+                    x = posx + self.tile_size * math.cos(math.pi / 2 + math.pi * 2 * j / 6)
+                    y = posy + self.tile_size * math.sin(math.pi / 2 + math.pi * 2 * j / 6)
+                    vertices.append([int(x), int(y)])
 
+                self.tiles.append(vertices)
                 v.append(vertices)
-                pygame.draw.polygon(self.screen, HEXCOLOUR, vertices)
-                pygame.draw.circle(self.screen, BLACK, centre, 4, 4)
+                posx += self.tile_size * math.sqrt(3)
 
-            y += self.height * 3/4  # offsets the y position after each row
-            x -= self.width * rows[row]  # resets x back to starting position
+            posy += self.tile_size * math.sqrt(3)
+
+            if o == 1:
+                posx = 306 - 86
+            elif o % 2 == 0:
+                posx = 306 - 43
+            else:
+                posx = 306
 
         print(v)
+
+        # takes vertices array and uses values to draw each hexagon
+        for vertices in self.tiles:
+            pygame.draw.polygon(self.screen, HEXCOLOUR, vertices)
+
