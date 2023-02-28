@@ -1,55 +1,84 @@
-from settings import *
-import pygame
 import math
+import pygame
+import random
+
+from settings import *
 
 
 class Board:
     def __init__(self, width, height):
         self.screen = pygame.display.set_mode((width, height))
         self.tile_size = TILESIZE
+        self.width = math.sqrt(3) * self.tile_size
+        self.height = 2 * self.tile_size
         self.tiles = []
+        self.tiles += [CLAY, ORE] * 3
+        self.tiles += [WHEAT, SHEEP, WOOD] * 4
+        self.tiles += [SAND]
+        random.shuffle(self.tiles)
 
     # draws the board
     def draw(self):
+        v = []
+        rows = [3, 4, 5, 4, 3]
         self.screen.fill(BGCOLOUR)
-        posx = 306
-        posy = 150
-        rows = [3, 4, 5, 4, 3]
-        v = []  # list of all vertices
+        x = 170
+        y = 150
+        count = 0
 
-        # loops through the row of hexagons (3 for 3 hexagons here)
+        for row in range(5):
+            x_offset = 0
 
-        rows = [3, 4, 5, 4, 3]
+            if row == 2:
+                x_offset -= self.width / 2
 
-        for o in range(5):
+            elif row % 2 == 0:
+                x_offset = self.width / 2
 
-            x = rows[o]
-
-            for i in range(x):
+            # loops x times for number of hexagons in row
+            for i in range(rows[row]):
+                x += self.width
+                centre = (round(x + x_offset), round(y))  # stores centre of a hexagon in a tuple
                 vertices = []
 
-                # loops through calculating the pos of vertices (6 as hexagon has 6 vertices)
+                # calculate vertices from centre of a hexagon
                 for j in range(6):
-                    x = posx + self.tile_size * math.cos(math.pi / 2 + math.pi * 2 * j / 6)
-                    y = posy + self.tile_size * math.sin(math.pi / 2 + math.pi * 2 * j / 6)
-                    vertices.append([int(x), int(y)])
+                    angle_deg = 60 * j - 30
+                    angle_rad = math.pi / 180 * angle_deg
+                    vert_x = centre[0] + self.tile_size * math.cos(angle_rad)
+                    vert_y = centre[1] + self.tile_size * math.sin(angle_rad)
+                    vertices.append([math.floor(vert_x), math.floor(vert_y)])
 
-                self.tiles.append(vertices)
                 v.append(vertices)
-                posx += self.tile_size * math.sqrt(3)
+                pygame.draw.polygon(self.screen, self.tiles[count], vertices)
+                pygame.draw.polygon(self.screen, BLACK, vertices, 3)
+                pygame.draw.circle(self.screen, BLACK, centre, 4, 4)
+                count += 1
 
-            posy += self.tile_size * math.sqrt(3)
-
-            if o == 1:
-                posx = 306 - 86
-            elif o % 2 == 0:
-                posx = 306 - 43
-            else:
-                posx = 306
+            y += self.height * 3/4
+            x -= self.width * rows[row]  # resets x back to starting position
 
         print(v)
 
-        # takes vertices array and uses values to draw each hexagon
-        for vertices in self.tiles:
-            pygame.draw.polygon(self.screen, HEXCOLOUR, vertices)
+
+        # checks for duplicated vertices to make sure vertices are touching
+"""
+        seen = set()
+        duplicates = set()
+        for coordinate_list in v:
+            for coordinate in coordinate_list:
+                tuple_coord = tuple(coordinate)
+                if tuple_coord in seen:
+                    duplicates.add(tuple_coord)
+                else:
+                    seen.add(tuple_coord)
+        print(len(list(duplicates)))
+"""
+
+
+
+
+
+
+
 
