@@ -61,7 +61,6 @@ class Board:
         print(v)
 
 
-        # checks for duplicated vertices to make sure vertices are touching
 """
         seen = set()
         duplicates = set()
