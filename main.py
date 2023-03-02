@@ -18,14 +18,33 @@ class Main:
     def run(self):
         self.board.draw()
         pygame.display.flip()
-        self.running = True
+        running = True
 
         # loops to keep game running and updating until it is closed
-        while self.running:
+        while running:
             self.clock.tick(FPS)
             self.visual()
             self.events()
             self.update()
+
+    def menu(self):
+        screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption("Main Menu")
+        screen.fill(BGCOLOUR)
+        font = pygame.font.Font("Retro Gaming.ttf", 30)
+        text = font.render("Click to start.", 1, WHITE)
+
+        while 1:
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.run()
+
+            screen.blit(text, (250, 250))
+
+            pygame.display.update()
 
     # initialises some visual stuff like the title and icon
     def visual(self):
@@ -52,7 +71,7 @@ class Main:
 
 m = Main()
 while True:
-    m.run()
+    m.menu()
 
 
 
