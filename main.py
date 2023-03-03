@@ -14,14 +14,15 @@ class Main:
         self.clock = pygame.time.Clock()
         self.count = 0
 
+
     # main function to run the game
     def run(self):
         self.board.draw()
         pygame.display.flip()
-        running = True
+        self.running = True
 
         # loops to keep game running and updating until it is closed
-        while running:
+        while self.running:
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -62,9 +63,8 @@ class Main:
             if event.type == pygame.QUIT:
                 self.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.count += 1
-                print('clicked ', self.count)
-
+                location = pygame.mouse.get_pos()
+                self.board.place_settlement(location)
     # quits game
     def quit(self):
         sys.exit()
@@ -72,10 +72,3 @@ class Main:
 m = Main()
 while True:
     m.menu()
-
-
-
-
-
-
-
