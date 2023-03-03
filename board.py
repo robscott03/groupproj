@@ -23,6 +23,7 @@ class Board:
     # draws the board
     def draw(self):
         v = []
+        polygonv = []
         rows = [3, 4, 5, 4, 3]
         self.screen.fill(BGCOLOUR)
         x = 170
@@ -54,6 +55,7 @@ class Board:
                     v.append((math.floor(vert_x), math.floor(vert_y)))
 
                 polygonv.append(vertices)
+
                 pygame.draw.polygon(self.screen, self.tiles[count], vertices)
                 pygame.draw.polygon(self.screen, BLACK, vertices, 3)
                 pygame.draw.circle(self.screen, BLACK, centre, 4, 4)
@@ -101,4 +103,5 @@ class Board:
                         print(self.existing_settlements)
                     else:
                         print("Location not available")
-"""
+
+
